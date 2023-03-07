@@ -89,18 +89,18 @@ for dataset in datasets:
         root_node.metadata['pos_tag'] = 'NN'
         root_node.metadata['hypernym'] = str(wn.synset('entity.n.01').offset())
         all_trees = []
-        for edges, root in data_tree[doc_idx]:
-            if edges:
+        for _edges, root in data_tree[doc_idx]:
+            if _edges:
                 # sub_tree = DepTree(edges=edges)
-                r = edges[0][1]
-                for rel, pa, ch in edges:
+                r = _edges[0][1]
+                for rel, pa, ch in _edges:
                     if pa.content == root.content and pa.metadata['pos_tag'] == root.metadata['pos_tag']:
                         r = pa
                     elif ch.content == root.content and ch.metadata['pos_tag'] == root.metadata['pos_tag']:
                         r = ch
                     else:
                         pass
-                all_trees.extend(edges)
+                all_trees.extend(_edges)
                 root_edge = ('sent', root_node, r)
                 all_trees.append(root_edge)
 
@@ -111,6 +111,7 @@ for dataset in datasets:
             rel = '(' + e[0] + ')'
             relations.append(rel)
             edges.append(tuple([e[1].content, e[2].content, rel]))
+            # print(tuple([e[1].content, e[2].content, rel]))
 
 words = sorted(list(set(words)))
 poses = sorted(list(set(poses)))
