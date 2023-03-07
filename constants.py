@@ -57,7 +57,7 @@ ALL_WORDS = DATA + 'all_words.txt'
 ALL_POSES = DATA + 'all_poses.txt'
 ALL_SYNSETS = DATA + 'all_hypernyms.txt'
 # ALL_DEPENDS = DATA + 'all_relations.txt'
-ALL_DEPENDS = DATA + 'all_depend.txt'
+ALL_DEPENDS = DATA + 'no_dir_depend.txt'
 
 # Sentence types
 SENTENCE_TYPE_GENERAL = 0

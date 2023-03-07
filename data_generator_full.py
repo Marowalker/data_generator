@@ -129,9 +129,9 @@ for dataset in datasets:
                 # sub_tree = DepTree(edges=edges)
                 r = edges[0][1]
                 for rel, pa, ch in edges:
-                    if (pa.content == root.content and pa.metadata['pos_tag'] == root.metadata['pos_tag']):
+                    if pa.content == root.content and pa.metadata['pos_tag'] == root.metadata['pos_tag']:
                         r = pa
-                    elif (ch.content == root.content and ch.metadata['pos_tag'] == root.metadata['pos_tag']):
+                    elif ch.content == root.content and ch.metadata['pos_tag'] == root.metadata['pos_tag']:
                         r = ch
                     else:
                         pass
