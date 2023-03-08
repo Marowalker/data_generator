@@ -142,7 +142,7 @@ for dataset in datasets:
         data_doctree[doc_idx] = all_trees
 
     # with open(os.path.join(output_path, "sdp_data_acentors_graph." + dataset + ".txt"), "w") as f:
-    with open(os.path.join(output_path, "sdp_data_acentors_full." + dataset + ".txt"), "w") as f:
+    with open(os.path.join(output_path, "sentence_data_acentors_full." + dataset + ".txt"), "w") as f:
         for doc in shuffle(sorted(documents, key=lambda x: x.id)):
             sdp_data = defaultdict(dict)
             deptree = data_doctree[doc.id]
@@ -159,8 +159,7 @@ for dataset in datasets:
             f.write(str(doc_len))
             f.write("\n")
 
-            sent_offset2idx = {}
-            sent_offset2idx[(-1, -1)] = 0
+            sent_offset2idx = {(-1, -1): 0}
             for idx, token in enumerate(doc_sentences):
                 sent_offset2idx[token.doc_offset] = idx + 1
             # pairs = get_candidate(sent, dict_nern[doc.id])
@@ -175,6 +174,12 @@ for dataset in datasets:
                 chem_token = chem_entity.tokens[-1]
                 dis_token = dis_entity.tokens[-1]
 
+                start_e1 = chem_token.doc_offset[0]
+                end_e1 = chem_token.doc_offset[1]
+
+                start_e2 = dis_token.doc_offset[0]
+                end_e2 = dis_token.doc_offset[1]
+
                 # r_path = spd_finder.find_sdp(deptree, chem_token, dis_token)
                 if deptree:
                     r_path, sb_path = spd_finder.find_sdp_with_sibling(deptree, chem_token, dis_token)
@@ -186,7 +191,23 @@ for dataset in datasets:
 
                     path = spd_finder.parse_directed_sdp(new_r_path)
 
-                    sent_path = '|'.join([token.content for token in doc_sentences])
+                    # sent_path = '|'.join([token.content for token in doc_sentences])
+                    sent_list = []
+                    for idx, tok in enumerate(doc_sentences):
+                        word = tok.content
+                        if tok.doc_offset[0] == start_e1:
+                            word = '<e1>' + word
+                        if tok.doc_offset[1] == end_e1:
+                            word = word + '</e1>'
+                        if tok.doc_offset[0] == start_e2:
+                            word = '<e2>' + word
+                        if tok.doc_offset[1] == end_e2:
+                            word = word + '</e2>'
+                        word = word + '_' + str(idx) + '\\' + tok.metadata['pos_tag'] + '\\' + tok.metadata['hypernym']
+                        sent_list.append(word)
+
+                    # sent_path = ' '.join([token.content for token in sent.tokens])
+                    sent_path = ' '.join(sent_list)
 
                     if path:
                         # print(path)
@@ -220,9 +241,9 @@ for dataset in datasets:
                     for k in range(len(sdp_data[pair_key]['CID'])):
                         # sdp, sent_path, adj, adj2, X = sdp_data[pair_key]['CID'][k]
                         sdp, sent_path = sdp_data[pair_key]['CID'][k]
-                        f.write('{} {} {}\n'.format(pair_key, 'CID', sdp))
+                        f.write('{} {} {}\n'.format(pair_key, 'CID', sent_path))
 
                 if 'NONE' in sdp_data[pair_key]:
                     for k in range(len(sdp_data[pair_key]['NONE'])):
                         sdp, sent_path = sdp_data[pair_key]['NONE'][k]
-                        f.write('{} {} {}\n'.format(pair_key, 'NONE', sdp))
+                        f.write('{} {} {}\n'.format(pair_key, 'NONE', sent_path))
