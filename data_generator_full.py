@@ -97,7 +97,7 @@ for dataset in datasets:
     # Generate data
     dict_nern = defaultdict(list)
     data_tree = defaultdict()
-    data_doctree = defaultdict()
+    data_doctree = defaultdict(list)
 
     # generate data for vocab files:
 
