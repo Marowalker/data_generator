@@ -158,7 +158,7 @@ for dataset in datasets:
             deptree_doc = data_doctree[doc.id]
             relation = raw_relations[doc.id]
             f.write(doc.id)
-            f.write("\t")
+            f.write("\n")
 
             batch_sentences = []
             i = 0
@@ -255,9 +255,9 @@ for dataset in datasets:
                     for k in range(len(sdp_data[pair_key]['CID'])):
                         # sdp, sent_path, adj, adj2, X = sdp_data[pair_key]['CID'][k]
                         sdp, sent_path = sdp_data[pair_key]['CID'][k]
-                        f.write('{} {} {}\n'.format(pair_key, 'CID', sdp))
+                        f.write('{} {} {}\n'.format(pair_key, 'CID', sent_path))
 
                 if 'NONE' in sdp_data[pair_key]:
                     for k in range(len(sdp_data[pair_key]['NONE'])):
                         sdp, sent_path = sdp_data[pair_key]['NONE'][k]
-                        f.write('{} {} {}\n'.format(pair_key, 'NONE', sdp))
+                        f.write('{} {} {}\n'.format(pair_key, 'NONE', sent_path))
