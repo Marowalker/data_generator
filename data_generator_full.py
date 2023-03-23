@@ -130,9 +130,12 @@ for dataset in datasets:
         root_node.metadata['pos_tag'] = 'NN'
         root_node.metadata['hypernym'] = str(wn.synset('entity.n.01').offset())
         i = 0
-        while i < len(data_tree[doc_idx]) - 2:
+        while i < len(data_tree[doc_idx]):
             all_trees = []
-            tree_batch = data_tree[doc_idx][i:i+2]
+            if i < len(data_tree[doc_idx]) - 2:
+                tree_batch = data_tree[doc_idx][i:i+2]
+            else:
+                tree_batch = data_tree[doc_idx][i:]
             for edges, root in tree_batch:
                 if edges:
                     # sub_tree = DepTree(edges=edges)
@@ -162,9 +165,12 @@ for dataset in datasets:
 
             batch_sentences = []
             i = 0
-            while i < len(doc.sentences) - 2:
+            while i < len(doc.sentences):
                 batch = []
-                batch_doc = doc.sentences[i:i + 2]
+                if i < len(doc.sentences) - 2:
+                    batch_doc = doc.sentences[i:i + 2]
+                else:
+                    batch_doc = doc.sentences[i:]
                 for sent in batch_doc:
                     for tok in sent.tokens:
                         batch.append(tok)
