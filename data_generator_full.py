@@ -206,7 +206,7 @@ for dataset in datasets:
 
                         # sent_path = '|'.join([token.content for token in doc_sentences])
                         sent_list = []
-                        for idx, tok in enumerate(doc_sentences):
+                        for idx, tok in enumerate(sent):
                             word = tok.content
                             if tok.doc_offset[0] == start_e1:
                                 word = '<e1>' + word
