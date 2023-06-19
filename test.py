@@ -4,6 +4,7 @@ import models
 import pre_process
 from data_managers import CDRDataManager as data_manager
 from feature_engineering.deptree.parsers import SpacyParser
+from feature_engineering.graph.dependency_graph import DepGraph
 from pre_process import opt as pre_opt
 from readers import BioCreativeReader
 import itertools
@@ -12,12 +13,8 @@ import os
 from feature_engineering.deptree.sdp import Finder
 from sklearn.utils import shuffle
 from feature_engineering.deptree.deptree_model import DepTree
-from relation_extraction.utils import load_vocab, get_trimmed_w2v_vectors
-from knowledge_base.utils import make_vocab
 import numpy as np
 import pickle
-from knowledge_base.utils import wordnet_triple_vocab, make_wordnet_vocab
-from relation_extraction.dataset import Dataset
 from models import Token
 from nltk.corpus import wordnet as wn
 
@@ -26,6 +23,14 @@ def process_one(doc):
     a = list()
     for sent in doc.sentences:
         deptree = parser.parse(sent)
+        a.append(deptree)
+    return a
+
+
+def process_one_tree(doc):
+    a = list()
+    for sent in doc.sentences:
+        deptree = DepGraph(sentence=sent)
         a.append(deptree)
     return a
 
@@ -65,7 +70,7 @@ spd_finder = Finder()
 input_path = "data/cdr"
 output_path = "data/sdp"
 
-datasets = ['train', 'dev', 'test']
+datasets = ['test_mini']
 for dataset in datasets:
     print('Process dataset: ' + dataset)
     reader = BioCreativeReader(os.path.join(input_path, "cdr_" + dataset + ".txt"))
@@ -89,9 +94,9 @@ for dataset in datasets:
 
     for doc in documents:
         raw_entity = raw_entities[doc.id]
-        for sent in doc.sentences:
-            for tok in sent.tokens:
-                print(tok.doc_offset)
+        # for sent in doc.sentences:
+        #     for tok in sent.tokens:
+        #         print(tok.doc_offset)
 
         for r_en in raw_entity:
             entity_obj = models.BioEntity(tokens=[], ids={})
@@ -110,20 +115,17 @@ for dataset in datasets:
                 print(doc.id, r_en)
             dict_nern[doc.id].append(entity_obj)
 
-        dep_tree = process_one(doc)
+        dep_tree = process_one_tree(doc)
         data_tree[doc.id] = dep_tree
 
     for doc_idx in data_tree:
+        for tree in data_tree[doc_idx]:
+            print(tree.get_adjacency())
         # print(data_tree[doc_idx])
-        root_node = Token(content='$ROOT$', doc_offset=(0, 0), sent_offset=(0, 0))
-        root_node.metadata['pos_tag'] = 'NN'
-        root_node.metadata['hypernym'] = str(wn.synset('entity.n.01').offset())
-        all_trees = []
-        for edges in data_tree[doc_idx]:
-            if edges:
-                print('edges: ', edges)
-                sub_tree = DepTree(edges=edges)
-                all_trees.extend(edges)
-                root_edge = ('sent', root_node, sub_tree.root)
-                all_trees.append(root_edge)
+        # for edges in data_tree[doc_idx]:
+        #     if edges:
+        #         sub_tree = DepTree(edges=edges)
+        #         all_trees.extend(edges)
+        #         root_edge = ('sent', root_node, sub_tree.root)
+        #         all_trees.append(root_edge)
         # print('doc_tree: ', all_trees)

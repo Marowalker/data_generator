@@ -34,19 +34,19 @@ class DepTree:
         # print('edge', edges)
 
         # validate tree
-        if not nx.is_tree(self.tree):
-            # raise ValueError('Invalid tree')
-            self.root = list(self.tree.nodes(data=True))[0]
-
-        # get root
-        else:
-            self.root = None
-            for node in self.tree.nodes():
-                if not self.tree.predecessors(node):
-                    if self.root is None:
-                        self.root = node
-                    else:
-                        raise ValueError('Double root')
+        # if not nx.is_tree(self.tree):
+        #     # raise ValueError('Invalid tree')
+        #     self.root = list(self.tree.nodes(data=True))[0]
+        #
+        # # get root
+        # else:
+        #     self.root = None
+        #     for node in self.tree.nodes():
+        #         if not self.tree.predecessors(node):
+        #             if self.root is None:
+        #                 self.root = node
+        #             else:
+        #                 raise ValueError('Double root')
 
     def clean_leaf(self):
         """

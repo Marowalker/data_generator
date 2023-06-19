@@ -47,28 +47,28 @@ class DepGraph:
 
             if edges:
                 for edge in edges:
-                    self.graph.add_node(edge[1].get_node(), pos=edge[1].metadata['pos_tag'],
+                    self.graph.add_node(edge[1], pos=edge[1].metadata['pos_tag'],
                                         hypernym=edge[1].metadata['hypernym'], label=edge[1].content)
-                    self.graph.add_node(edge[2].get_node(), pos=edge[2].metadata['pos_tag'],
+                    self.graph.add_node(edge[2], pos=edge[2].metadata['pos_tag'],
                                         hypernym=edge[2].metadata['hypernym'], label=edge[2].content)
-                    self.graph.add_edge(edge[1].get_node(), edge[2].get_node(), relation=edge[0], type='dependency',
+                    self.graph.add_edge(edge[1], edge[2], relation=edge[0], type='dependency',
                                         weight=1.0)
 
-    def find_siblings(self, node):
-        parents = list(self.graph.predecessors(node))
-        if not parents:
-            return None
-        else:
-            siblings = []
-            father = parents[0]
-            for n in self.graph.nodes():
-                if n != node:
-                    n_parents = list(self.graph.predecessors(n))
-                    if n_parents:
-                        n_father = n_parents[0]
-                        if n_father == father:
-                            siblings.append(n)
-            return siblings
+    # def find_siblings(self, node):
+    #     parents = list(self.graph.predecessors(node))
+    #     if not parents:
+    #         return None
+    #     else:
+    #         siblings = []
+    #         father = parents[0]
+    #         for n in self.graph.nodes():
+    #             if n != node:
+    #                 n_parents = list(self.graph.predecessors(n))
+    #                 if n_parents:
+    #                     n_father = n_parents[0]
+    #                     if n_father == father:
+    #                         siblings.append(n)
+    #         return siblings
 
     def get_adjacency(self):
         adj = nx.linalg.adjacency_matrix(self.graph).todense()
