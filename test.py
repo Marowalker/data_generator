@@ -120,7 +120,21 @@ for dataset in datasets:
 
     for doc_idx in data_tree:
         for tree in data_tree[doc_idx]:
-            print(tree.get_adjacency())
+            sentence = tree.sentence
+            pairs = get_candidate(sentence, dict_nern[doc_idx])
+            if len(pairs) == 0:
+                continue
+
+            for pair in pairs:
+                chem_entity = pair[0]
+                dis_entity = pair[1]
+
+                chem_token = chem_entity.tokens[-1]
+                dis_token = dis_entity.tokens[-1]
+
+                path = tree.get_shortest_path(chem_token, dis_token)
+                print(path)
+
         # print(data_tree[doc_idx])
         # for edges in data_tree[doc_idx]:
         #     if edges:
